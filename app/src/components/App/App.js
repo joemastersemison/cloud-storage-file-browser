@@ -1,25 +1,28 @@
 import React, { useState } from "react";
-import logo from "../../assets/logo.svg";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
+import config from "../../config";
 import Sidebar from "../Sidebar/Sidebar";
 import FileExplorer from "../FileExplorer/FileExplorer";
-import Auth from "../GoogleAuth/GoogleAuth";
 import FileUploadModal from "../FileUploadModal/FileUploadModal";
 import FolderCreationModal from "../FolderCreationModal/FolderCreationModal";
 import SettingsModal from "../SettingsModal/SettingsModal";
-import api from "../../api/storage";
 
 function App() {
-  const [idToken, setIdToken] = useState("");
-  const [profile, setProfile] = useState({});
-
   const [explorerPath, setExplorerPath] = useState(""); // Current file explorer path
   const [doRefresh, refreshExplorer] = useState(true);
 
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [folderCreatorOpen, setFolderCreatorOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const idToken = config.idToken;
+  const profile = {
+    name: "Library Browser",
+    imageUrl:
+      "https://winaero.com/blog/wp-content/uploads/2018/12/file-explorer-folder-libraries-icon-18298.png",
+    email: "info@fuel-compliance.com",
+  };
 
   return (
     <div className="App">
@@ -31,13 +34,6 @@ function App() {
           openSettings={() => setSettingsOpen(true)}
         />
       </nav>
-      <Auth
-        setIdToken={(t) => {
-          api.idToken = t;
-          setIdToken(t);
-        }}
-        setProfile={setProfile}
-      />
       <section className="app-content">
         <FileExplorer
           idToken={idToken}

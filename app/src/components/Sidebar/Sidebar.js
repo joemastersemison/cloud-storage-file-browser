@@ -1,5 +1,5 @@
 import React from "react";
-import { Header, Icon, Menu, Sidebar, Segment, Image } from "semantic-ui-react";
+import { Header, Icon, Menu, Sidebar, Image } from "semantic-ui-react";
 import config from "../../config";
 
 export default ({
