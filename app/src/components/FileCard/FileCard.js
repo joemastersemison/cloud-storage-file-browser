@@ -48,32 +48,6 @@ const FileCard = ({
                     disabled={isFolder}
                     onClick={() => onDownload(isPublic)}
                   />
-                  <Dropdown.Item
-                    icon={isPublic ? "lock" : "unlock"}
-                    text={isPublic ? "Make private" : "Make public"}
-                    disabled={isFolder}
-                    onClick={() => {
-                      onSetPublic(!isPublic);
-                    }}
-                  />
-                  <Dropdown.Divider />
-                  <Dropdown.Item
-                    icon="arrow right"
-                    text="Move"
-                    disabled={isFolder}
-                    onClick={onMove}
-                  />
-                  <Dropdown.Item
-                    icon="edit"
-                    text="Rename"
-                    disabled={isFolder}
-                    onClick={onRename}
-                  />
-                  <Dropdown.Item
-                    icon="trash"
-                    text="Delete"
-                    onClick={onDelete}
-                  />
                 </Dropdown.Menu>
               </Dropdown>
             </List.Header>

@@ -34,7 +34,7 @@ export default {
   getSharableUrl(filepath, download) {
     return axios
       .post(
-        "/get-share-url",
+        "/getShareUrl",
         {
           filepath,
           download,

@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import "./FileExplorer.css";
 import {
   Header,
@@ -19,7 +18,6 @@ import { toast } from "react-toastify";
 import FileCard from "../FileCard/FileCard";
 import { formatBytes, formatDatetime } from "../../util/fileutil";
 import api from "../../api/storage";
-import config from "../../config";
 
 const FileExplorer = ({
   idToken,
@@ -31,7 +29,7 @@ const FileExplorer = ({
   const [state, setState] = useState({
     loading: false,
     loadingError: false,
-    bucketName: "objects",
+    bucketName: "library",
   });
   const [path, setPathState] = useState([]);
   const [files, setFiles] = useState([]); // All file objects
@@ -85,7 +83,7 @@ const FileExplorer = ({
         return second.isFolder - first.isFolder; // Sort objects so that folders are first
       });
 
-  const getFiles = () => {
+  const getFiles = useCallback(() => {
     setState({ ...state, loading: true, loadingError: false });
     api
       .getFiles()
@@ -99,11 +97,11 @@ const FileExplorer = ({
         });
       })
       .catch(() => setState({ ...state, loading: true, loadingError: true }));
-  };
+  }, [state]);
 
   useEffect(() => {
     // When idToken and doRefresh are set, refresh the files
-    if (!idToken || idToken.length < 3 || !doRefresh) return;
+    if (!doRefresh) return;
     setState({ ...state, loading: true });
 
     getFiles();
@@ -210,57 +208,13 @@ const FileExplorer = ({
             setIgnoringFileStructure(false);
             setPath(file.path.slice(0, -1).split("/")); // Remove ending slash from folder path and split into separate folder names
           } else {
-            if (await api.checkIsPublic(file.path)) {
-              navigator.clipboard
-                .writeText(config.CDN_URL + file.path)
-                .then(() => {
-                  toast.dark("📋 File URL copied to clipboard");
-                })
-                .catch(() => {
-                  toast.dark(`File URL: ${config.CDN_URL + file.path}`, {
-                    position: "top-center",
-                    draggable: false,
-                    closeOnClick: false,
-                    autoClose: 10000,
-                  });
-                });
-            } else {
-              const { url, duration } = await api.getSharableUrl(file.path);
-              if (!url)
-                toast.dark(
-                  "🚫 Couldn't get sharable URL. Try making the file public instead."
-                );
-              navigator.clipboard
-                .writeText(url)
-                .then(() => {
-                  toast.dark(
-                    `🔗 Sharable URL copied to clipboard. It will expire in ${duration} days. Make this file public to get a permanent public link.`,
-                    {
-                      autoClose: 8000,
-                    }
-                  );
-                })
-                .catch(() => {
-                  toast.dark(
-                    `Sharable URL (will expire in ${duration} days): ${url}`,
-                    {
-                      position: "top-center",
-                      draggable: false,
-                      closeOnClick: false,
-                      autoClose: 10000,
-                    }
-                  );
-                });
-            }
-          }
-        }}
-        onDownload={async (publicDownload) => {
-          if (publicDownload) {
-            window.open(file.downloadLink, "_blank");
-          } else {
             const { url } = await api.getSharableUrl(file.path, true);
             window.open(url, "_blank");
           }
+        }}
+        onDownload={async () => {
+          const { url } = await api.getSharableUrl(file.path, true);
+          window.open(url, "_blank");
         }}
         checkIsPublic={() => api.checkIsPublic(file.path)}
         onSetPublic={(pub) => {
@@ -376,11 +330,7 @@ const FileExplorer = ({
               {state.loadingError
                 ? "Either the request failed or you are not authorized to access these files. "
                 : "We are gathering your files..."}
-              {state.loadingError && (
-                <a href="#" onClick={getFiles}>
-                  Try again.
-                </a>
-              )}
+              {state.loadingError && <a onClick={getFiles}>Try again.</a>}
             </Message.Content>
           </Message>
         )}
