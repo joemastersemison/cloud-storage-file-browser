@@ -7,14 +7,14 @@ const axios = axiosLib.create({
 
 const reqConfig = (obj) => ({
   headers: {
-    Authorization: `Bearer ${obj.idToken}`,
+    Accept: "application/json",
   },
 });
 
 export default {
   idToken: config.idToken,
   getFiles() {
-    return axios.get("/get-files", reqConfig(this));
+    return axios.get("/getFiles", reqConfig(this));
   },
   checkIsPublic(path) {
     return axios
