@@ -88,6 +88,7 @@ const FileExplorer = ({
     api
       .getFiles()
       .then(({ data }) => {
+        console.log(`file list: ${JSON.stringify(data.files, null, 2)}`);
         setFiles(data.files);
         setState({
           ...state,
@@ -174,7 +175,10 @@ const FileExplorer = ({
         fileType={file.contentType}
         isFolder={file.isFolder}
         lastMod={formatDatetime(file.updated)}
-        name={ignoringFileStructure ? file.path : file.name}
+        name={
+          file.originalFileName ||
+          (ignoringFileStructure ? file.path : file.name)
+        }
         size={formatBytes(file.size)}
         isDimmed={!!fileToMove.path && !file.isFolder}
         onDelete={() => {
