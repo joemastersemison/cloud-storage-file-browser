@@ -212,12 +212,20 @@ const FileExplorer = ({
             setIgnoringFileStructure(false);
             setPath(file.path.slice(0, -1).split("/")); // Remove ending slash from folder path and split into separate folder names
           } else {
-            const { url } = await api.getSharableUrl(file.path, true);
+            const { url } = await api.getSharableUrl(
+              file.path,
+              true,
+              file.originalFileName
+            );
             window.open(url, "_blank");
           }
         }}
         onDownload={async () => {
-          const { url } = await api.getSharableUrl(file.path, true);
+          const { url } = await api.getSharableUrl(
+            file.path,
+            true,
+            file.originalFileName
+          );
           window.open(url, "_blank");
         }}
         checkIsPublic={() => api.checkIsPublic(file.path)}

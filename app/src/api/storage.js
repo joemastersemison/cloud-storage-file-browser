@@ -31,13 +31,14 @@ export default {
       reqConfig(this)
     );
   },
-  getSharableUrl(filepath, download) {
+  getSharableUrl(filepath, download, originalFileName) {
     return axios
       .post(
         "/getShareUrl",
         {
           filepath,
           download,
+          originalFileName,
         },
         reqConfig(this)
       )
