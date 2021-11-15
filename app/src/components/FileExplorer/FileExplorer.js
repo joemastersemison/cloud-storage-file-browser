@@ -175,10 +175,9 @@ const FileExplorer = ({
         fileType={file.contentType}
         isFolder={file.isFolder}
         lastMod={formatDatetime(file.updated)}
-        name={
-          file.originalFileName ||
-          (ignoringFileStructure ? file.path : file.name)
-        }
+        name={`${ignoringFileStructure ? file.path : file.name}${
+          file.originalFileName ? ` (${file.originalFileName})` : ""
+        }`}
         size={formatBytes(file.size)}
         isDimmed={!!fileToMove.path && !file.isFolder}
         onDelete={() => {
